@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, {
         console.error(err.message);
     });
 // Rotas
-app.use('/api', routes); // Seus endpoints começarão com /api
+app.use('/', routes); // Seus endpoints começarão com /api
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
