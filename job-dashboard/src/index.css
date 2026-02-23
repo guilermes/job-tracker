@@ -1,0 +1,156 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #2255a1; /* Seu azul de fundo */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ajuste global para remover o scroll lateral indesejado */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* --- NAVBAR (Mantendo suas cores e fontes) --- */
+.navbar {
+  width: 100%;
+  background-color: #424242;
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.navbar h1 {
+  margin-left: 10vw;
+  font-size: 3.2em; /* Sua fonte original */
+  line-height: 1.1;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  gap: 2vw;
+  margin-left: 10vw;
+  font-size: 1.5rem; /* Seu tamanho original */
+}
+
+Link {
+  color:#0056b3;
+  text-decoration: none;
+}
+
+.search-box {
+  width: 100%;
+  text-align: center;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  color: #d8d8d8;
+  background-color: #007bff;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  margin-top: 2vh;
+  margin-left: 2vw;
+}
+
+button:hover {
+  background-color: #0056b3;
+  border: #007bff solid 1px;
+  color: white;
+}
+
+/* --- GRID DE JOBS (2 Colunas e Controle de Espaço) --- */
+.jobs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  column-gap: 15px; /* Espaço entre colunas (diminuído como pediu) */
+  row-gap: 30px;    /* Espaço entre as linhas */
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto 5vh auto; /* Centraliza o grid */
+}
+
+/* --- CARD (Mantendo seu estilo visual) --- */
+.job-card {
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 2vh 2vw;
+  background: #424242;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.job-main-container {
+  display: flex;
+  gap: 20px;
+}
+
+.company-logo {
+  width: 100px; 
+  height: 100px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.job-right-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.apply-button-link {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  width: fit-content;
+}
+
+.sobre {
+  background-color: #424242;
+  border: #d8d8d8 solid;
+  border-radius: 5px;
+  width: 40%;
+  margin-top: 10vh;
+  margin-left: 30vw;
+  padding:20px;
+  justify-content: center;
+}
+
+.sobre h1 {
+  text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 850px) {
+  .jobs-grid {
+    grid-template-columns: 1fr; /* 1 coluna em telas menores */
+  }
+}
