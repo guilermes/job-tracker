@@ -6,6 +6,6 @@ const api = axios.create({
 });
 
 export const getVagas = async (cargo: string): Promise<ApiResponse> => {
-  const response = await api.get<ApiResponse>(`/vagas?cargo=${cargo}`);
+  const response = await api.get<ApiResponse>(`/api/vagas?cargo=${cargo}`);
   return response.data;
 };
