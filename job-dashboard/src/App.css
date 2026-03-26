@@ -9,3 +9,5 @@
 /* Diferenciando as fontes visualmente */
 span[data-fonte="Remotive"] { background: #ffeaa7; color: #d63031; }
 span[data-fonte*="SerpApi"] { background: #dfe6e9; color: #2d3436; }
+span[data-fonte*="AdzunaApi"] { background: #dfe6e9; color: #01576e; }
+span[data-fonte*="JobicyApi"] { background: #dfe6e9; color: #006105; }
