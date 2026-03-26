@@ -33,7 +33,7 @@ router.get('/vagas', async (req, res) => { // Removi o /api prefixo se o server 
             fetchAdzunaJobs(cargo),
             fetchJobicyJobs(cargo)
         ]);
-        
+
         // 3. Extrai apenas os valores das promessas que foram resolvidas (fulfilled)
         // O .flat() serve para juntar os arrays de cada API em um único arrayzão
         const todasVagasRaw = resultados
@@ -44,14 +44,14 @@ router.get('/vagas', async (req, res) => { // Removi o /api prefixo se o server 
         // 4. Mapear e garantir que o termoBusca esteja correto
         const todasVagas = todasVagasRaw.map(vaga => ({
             ...vaga,
-            termoBusca: termo 
+            termoBusca: termo
         }));
 
         // 5. Salva no banco (apenas se houver resultados)
         if (todasVagas.length > 0) {
             try {
                 // ordered: false é ótimo aqui para não travar se houver duplicata de ID (se você usar um)
-                await Vaga.insertMany(todasVagas, { ordered: false }); 
+                await Vaga.insertMany(todasVagas, { ordered: false });
                 console.log(`✅ ${todasVagas.length} vagas salvas no banco.`);
             } catch (insertError) {
                 // O MongoDB lança erro se houver duplicatas com 'unique: true', mas o ordered: false salva o resto
