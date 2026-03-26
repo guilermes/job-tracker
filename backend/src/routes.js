@@ -3,8 +3,10 @@ const router = Router();
 import Vaga from './models/Vaga.js';
 import { fetchSerpJobs } from './services/serp.js';
 import { fetchRemotiveJobs } from './services/remotive.js';
+import { fetchAdzunaJobs } from './services/adzunaapi.js';
+import { fetchJobicyJobs } from './services/jobicyapi.js';
 
-router.get('/vagas', async (req, res) => {
+router.get('/vagas', async (req, res) => { // Removi o /api prefixo se o server já usa app.use('/api', routes)
     const { cargo } = req.query;
 
     if (!cargo) {
@@ -14,36 +16,46 @@ router.get('/vagas', async (req, res) => {
     const termo = cargo.toLowerCase();
 
     try {
-        // 1. Check Banco de Dados
+        // 1. Check Banco de Dados (Cache)
         const cacheVagas = await Vaga.find({ termoBusca: termo });
 
         if (cacheVagas.length > 0) {
-            console.log(`📦 Servindo ${termo} via Cache`);
+            console.log(`📦 Servindo "${termo}" via Cache`);
             return res.json({ source: 'cache', data: cacheVagas });
         }
 
-        // 2. Busca nas APIs
+        console.log(`🔍 Buscando "${termo}" nas APIs externas...`);
+
+        // 2. Busca em todas as APIs simultaneamente
         const resultados = await Promise.allSettled([
             fetchSerpJobs(cargo),
-            fetchRemotiveJobs(cargo)
+            fetchRemotiveJobs(cargo),
+            fetchAdzunaJobs(cargo),
+            fetchJobicyJobs(cargo)
         ]);
         
-        const vagasSerp = resultados[0].status === 'fulfilled' ? resultados[0].value : [];
-        const vagasRemotive = resultados[1].status === 'fulfilled' ? resultados[1].value : [];
+        // 3. Extrai apenas os valores das promessas que foram resolvidas (fulfilled)
+        // O .flat() serve para juntar os arrays de cada API em um único arrayzão
+        const todasVagasRaw = resultados
+            .filter(r => r.status === 'fulfilled')
+            .map(r => r.value)
+            .flat();
 
-        // 3. Mapear os resultados para incluir o termoBusca antes de salvar
-        const todasVagas = [...vagasSerp, ...vagasRemotive].map(vaga => ({
+        // 4. Mapear e garantir que o termoBusca esteja correto
+        const todasVagas = todasVagasRaw.map(vaga => ({
             ...vaga,
-            termoBusca: termo // Adiciona o termo para o filtro do find() funcionar na próxima vez
+            termoBusca: termo 
         }));
 
-        // 4. Salva no banco (apenas se houver resultados)
+        // 5. Salva no banco (apenas se houver resultados)
         if (todasVagas.length > 0) {
             try {
+                // ordered: false é ótimo aqui para não travar se houver duplicata de ID (se você usar um)
                 await Vaga.insertMany(todasVagas, { ordered: false }); 
-                // ordered: false evita que o erro em uma vaga pare a inserção das outras
+                console.log(`✅ ${todasVagas.length} vagas salvas no banco.`);
             } catch (insertError) {
-                console.error("⚠️ Aviso: Algumas vagas já existiam no banco.");
+                // O MongoDB lança erro se houver duplicatas com 'unique: true', mas o ordered: false salva o resto
+                console.warn("⚠️ Aviso: Algumas vagas já existiam no banco ou houve erro parcial na inserção.");
             }
         }
 
